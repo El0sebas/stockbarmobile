@@ -15,3 +15,14 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## Deploy en Vercel
+
+Este proyecto se despliega como Flutter Web. La configuración de
+[`vercel.json`](vercel.json) instala Flutter 3.47.2, ejecuta `flutter build web`
+y publica `build/web`.
+
+En Vercel, importa el repositorio y deja vacíos los campos **Framework
+Preset**, **Build Command** y **Output Directory** para que se utilice la
+configuración del repositorio. Después de cada push a la rama conectada,
+Vercel generará un nuevo despliegue automáticamente.
