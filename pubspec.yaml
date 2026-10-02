@@ -36,6 +36,13 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # Generación del PDF de la factura de venta (ver lib/utils/factura.dart).
+  # Puro Dart, sin implementación nativa por plataforma — a propósito, para
+  # no depender de "Modo de desarrollador" de Windows (que exigen los
+  # plugins federados como `printing` al correr `flutter pub get` en este
+  # equipo) solo para poder compilar el APK de Android.
+  pdf: ^3.11.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -46,6 +53,19 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+
+  flutter_launcher_icons: ^0.14.3
+
+# Ícono real de StockBar (cuadro ámbar + barras ascendentes, mismo isotipo del
+# Sidebar web) en vez del ícono default de Flutter. Se genera para
+# Android/iOS con `dart run flutter_launcher_icons`.
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#F59E0B"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
