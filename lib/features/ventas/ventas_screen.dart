@@ -82,6 +82,10 @@ class _VentasScreenState extends State<VentasScreen> {
   }
 
   Future<void> _confirmarAnularVenta(Map<String, dynamic> venta) async {
+    // Espejo de trg_validar_anulacion_venta: solo se puede anular mientras
+    // está Pendiente. Una venta Lista (completada) ya no se puede anular.
+    if (venta['estado'] != 'Pendiente') return;
+
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -550,28 +554,83 @@ class _VentasScreenState extends State<VentasScreen> {
                                     ],
                                   )
                                 else if (listo)
+                                  const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.check_circle,
+                                        color: AppColors.success,
+                                        size: 14,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        'Venta completada',
+                                        style: TextStyle(
+                                          color: AppColors.success,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                else
+                                  // Solo se puede anular mientras está
+                                  // Pendiente — una vez marcada como Listo
+                                  // (completada) ya no se puede anular,
+                                  // igual que venta.estado en la BD/web.
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.check_circle,
-                                            color: AppColors.success,
-                                            size: 14,
-                                          ),
-                                          SizedBox(width: 5),
-                                          Text(
-                                            'Venta completada',
-                                            style: TextStyle(
-                                              color: AppColors.success,
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w600,
+                                      ElevatedButton.icon(
+                                        onPressed: () {
+                                          setState(() {
+                                            venta['estado'] = 'Listo';
+                                          });
+
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Venta marcada como lista.',
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
                                             ),
+                                          );
+                                        },
+                                        icon: const Icon(
+                                          Icons.check,
+                                          size: 16,
+                                        ),
+                                        label: const Text(
+                                          'Marcar como listo',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                        ],
+                                        ),
+                                        // Mismo botón sólido (fondo ámbar +
+                                        // texto blanco) que "Abrir jornada"
+                                        // y el resto de acciones de la app:
+                                        // un texto tintado sin relleno se
+                                        // leía como una etiqueta, no como
+                                        // algo tocable.
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              AppColors.actionAmber,
+                                          foregroundColor: Colors.white,
+                                          minimumSize: Size.zero,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 9,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                        ),
                                       ),
                                       TextButton.icon(
                                         onPressed: () =>
@@ -593,56 +652,6 @@ class _VentasScreenState extends State<VentasScreen> {
                                         ),
                                       ),
                                     ],
-                                  )
-                                else
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: ElevatedButton.icon(
-                                      onPressed: () {
-                                        setState(() {
-                                          venta['estado'] = 'Listo';
-                                        });
-
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                              'Venta marcada como lista.',
-                                            ),
-                                            behavior: SnackBarBehavior.floating,
-                                          ),
-                                        );
-                                      },
-                                      icon: const Icon(Icons.check, size: 16),
-                                      label: const Text(
-                                        'Marcar como listo',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      // Mismo botón sólido (fondo ámbar +
-                                      // texto blanco) que "Abrir jornada"
-                                      // y el resto de acciones de la app:
-                                      // un texto tintado sin relleno se
-                                      // leía como una etiqueta, no como
-                                      // algo tocable.
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.actionAmber,
-                                        foregroundColor: Colors.white,
-                                        minimumSize: Size.zero,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 14,
-                                          vertical: 9,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
                                   ),
                               ],
                             ),
